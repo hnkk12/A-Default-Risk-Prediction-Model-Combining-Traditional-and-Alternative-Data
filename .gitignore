@@ -1,0 +1,3 @@
+# ignoring the dataset folder
+dataset/
+input/*.csv
