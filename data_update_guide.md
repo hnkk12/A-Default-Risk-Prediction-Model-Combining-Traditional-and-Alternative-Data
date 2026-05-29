@@ -18,7 +18,7 @@ Tài liệu này hướng dẫn chi tiết cách phòng Quản trị rủi ro v�
 | Tên Cột | Kiểu Dữ Liệu | Ý Nghĩa Nghiệp Vụ | Ví Dụ |
 | :--- | :--- | :--- | :--- |
 | `SK_ID_CURR` | Số nguyên (`int`) | Mã định danh duy nhất của hồ sơ khách hàng | `100002` |
-| `AMT_INCOME_TOTAL`| Số thực (`float`) | Tổng thu nhập hàng nguyên/năm của khách hàng | `135000.0` |
+| `AMT_INCOME_TOTAL`| Số thực (`float`) | Tổng thu nhập hàng năm của khách hàng | `135000.0` |
 | `AMT_CREDIT` | Số thực (`float`) | Số tiền khách hàng đăng ký vay | `450000.0` |
 | `AMT_ANNUITY` | Số thực (`float`) | Số tiền khách hàng phải trả định kỳ (gốc + lãi) | `25000.0` |
 | `DAYS_BIRTH` | Số nguyên (`int`) | Độ tuổi khách hàng (tính bằng số ngày âm tính ngược từ hiện tại) | `-12000` (~33 tuổi) |
