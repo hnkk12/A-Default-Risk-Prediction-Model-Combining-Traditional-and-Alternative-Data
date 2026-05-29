@@ -1,3 +1,4 @@
 # ignoring the dataset folder
 dataset/
 input/*.csv
+data_output/*.csv
