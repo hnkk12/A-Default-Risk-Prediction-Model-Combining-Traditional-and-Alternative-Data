@@ -2,3 +2,4 @@
 dataset/
 input/*.csv
 data_output/*.csv
+MinhChung_KetQua_ChayThat/cleaned_data.csv
