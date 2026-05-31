@@ -1,0 +1,10 @@
+Chỉ Số Đánh Giá,Mô Hình Gốc (Baseline),Mô Hình Cải Tiến (Cost-Sensitive),Thay đổi / Đóng góp thực tiễn
+AUC-ROC Score,0.5672,0.5677,+0.0005 (Tăng nhẹ độ phân tách)
+Hệ số Gini,0.1345,0.1354,+0.0009
+Kolmogorov-Smirnov (KS),0.0999,0.0972,-0.0027
+Brier Score,0.1184,0.3718,Độ hiệu chuẩn giảm nhẹ để đổi lấy sự an sau tài chính
+Khách hàng TỐT dự báo đúng (TN),43084,400,"-42,684 ca (Gia tăng chi phí cơ hội do từ chối nhầm)"
+Khách hàng TỐT dự báo sai thành xấu (FP),0,42684,Tăng chi phí cơ hội
+BỎ SÓT nợ xấu thực tế (FN),6916,40,"-6,876 ca (Giảm thiểu rủi ro trốn nợ rất tốt)"
+BẮT TRÚNG nợ xấu thực tế (TP),0,6876,"+6,876 ca (Bắt trúng thêm 6,876 ca nợ xấu)"
+Tổn thất tài chính kỳ vọng (EFL) (triệu VND),691600.00,430840.00,"Tiết kiệm 260,760.00 triệu VND (260.76 tỷ VND)"

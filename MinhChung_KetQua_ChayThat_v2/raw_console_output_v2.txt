@@ -1,0 +1,160 @@
+Bắt đầu chạy thử nghiệm cấp cao (Version 2 - Việt hóa) lúc: 2026-06-01 02:21:35
+Đang đọc dữ liệu từ data_output/cleaned_data2.csv...
+
+--- Thiết kế Đặc trưng nâng cao (Feature Engineering) ---
+Tạo các biến tỷ lệ tài chính Việt hóa (DIR, AIR, ACR, DAR)...
+Tạo các biến tương tác tổ hợp điểm tín dụng (EXT_SOURCES)...
+
+================================================================================
+BƯỚC 3: HUẤN LUYỆN CHÉO (3-FOLD STRATIFIED CV) & SO SÁNH 4 THUẬT TOÁN (V2)
+================================================================================
+
+--- Đang chạy Fold 1/3 ---
+  * Random Forest   - AUC: 0.5599 | Gini: 0.1197 | KS: 0.0872 | Brier: 0.1186 (6.47s)
+[LightGBM] [Info] Number of positive: 23054, number of negative: 143612
+[LightGBM] [Info] Auto-choosing col-wise multi-threading, the overhead of testing was 0.010730 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+[LightGBM] [Info] Total Bins 4691
+[LightGBM] [Info] Number of data points in the train set: 166666, number of used features: 30
+[LightGBM] [Info] [binary:BoostFromScore]: pavg=0.138325 -> initscore=-1.829276
+[LightGBM] [Info] Start training from score -1.829276
+  * LightGBM        - AUC: 0.5580 | Gini: 0.1160 | KS: 0.0858 | Brier: 0.1186 (0.64s)
+  * XGBoost         - AUC: 0.5582 | Gini: 0.1165 | KS: 0.0847 | Brier: 0.1186 (2.60s)
+  * CatBoost        - AUC: 0.5603 | Gini: 0.1206 | KS: 0.0882 | Brier: 0.1186 (1.74s)
+
+--- Đang chạy Fold 2/3 ---
+  * Random Forest   - AUC: 0.5630 | Gini: 0.1261 | KS: 0.0912 | Brier: 0.1185 (5.96s)
+[LightGBM] [Info] Number of positive: 23054, number of negative: 143613
+[LightGBM] [Info] Auto-choosing col-wise multi-threading, the overhead of testing was 0.009173 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+[LightGBM] [Info] Total Bins 4691
+[LightGBM] [Info] Number of data points in the train set: 166667, number of used features: 30
+[LightGBM] [Info] [binary:BoostFromScore]: pavg=0.138324 -> initscore=-1.829283
+[LightGBM] [Info] Start training from score -1.829283
+  * LightGBM        - AUC: 0.5654 | Gini: 0.1308 | KS: 0.0953 | Brier: 0.1185 (0.65s)
+  * XGBoost         - AUC: 0.5632 | Gini: 0.1263 | KS: 0.0926 | Brier: 0.1185 (0.72s)
+  * CatBoost        - AUC: 0.5680 | Gini: 0.1360 | KS: 0.0975 | Brier: 0.1184 (2.02s)
+
+--- Đang chạy Fold 3/3 ---
+  * Random Forest   - AUC: 0.5607 | Gini: 0.1213 | KS: 0.0913 | Brier: 0.1186 (7.61s)
+[LightGBM] [Info] Number of positive: 23054, number of negative: 143613
+[LightGBM] [Info] Auto-choosing col-wise multi-threading, the overhead of testing was 0.009217 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+[LightGBM] [Info] Total Bins 4691
+[LightGBM] [Info] Number of data points in the train set: 166667, number of used features: 30
+[LightGBM] [Info] [binary:BoostFromScore]: pavg=0.138324 -> initscore=-1.829283
+[LightGBM] [Info] Start training from score -1.829283
+  * LightGBM        - AUC: 0.5621 | Gini: 0.1241 | KS: 0.0925 | Brier: 0.1186 (0.93s)
+  * XGBoost         - AUC: 0.5615 | Gini: 0.1230 | KS: 0.0914 | Brier: 0.1186 (1.01s)
+  * CatBoost        - AUC: 0.5635 | Gini: 0.1270 | KS: 0.0935 | Brier: 0.1185 (2.30s)
+
+================================================================================
+BẢNG TỔNG HỢP HIỆU NĂNG MÔ HÌNH (3-FOLD CROSS-VALIDATION) - V2
+================================================================================
+Thuật Toán      | AUC-ROC (Mean ± SD)    | Hệ Số Gini (Mean) | KS Stat (Mean) | Brier (Mean)
+--------------------------------------------------------------------------------
+Random Forest   | 0.5612 ± 0.0013        | 0.1224            | 0.0899         | 0.1186      
+LightGBM        | 0.5618 ± 0.0030        | 0.1236            | 0.0912         | 0.1186      
+XGBoost         | 0.5610 ± 0.0021        | 0.1219            | 0.0896         | 0.1186      
+CatBoost        | 0.5639 ± 0.0032        | 0.1279            | 0.0931         | 0.1185      
+================================================================================
+Mô hình tối ưu nhất được lựa chọn: CatBoost
+
+--- Kiểm định ý nghĩa thống kê (Paired t-test) so với mô hình tốt nhất ---
+  - CatBoost vs Random Forest   -> p-value: 0.17377 | Kết luận: Không có ý nghĩa (p >= 0.05)
+  - CatBoost vs LightGBM        -> p-value: 0.02689 | Kết luận: Có ý nghĩa (p < 0.05)
+  - CatBoost vs XGBoost         -> p-value: 0.08712 | Kết luận: Không có ý nghĩa (p >= 0.05)
+
+================================================================================
+BƯỚC 4: TRIỂN KHAI ĐIỂM CẢI TIẾN V2 (scale_pos_weight = 11.5 / class_weight)
+================================================================================
+Đang huấn luyện mô hình cải tiến CatBoost...
+
+--- SO SÁNH MA TRẬN NHẦM LẪN VÀ CHỈ SỐ RỦI RO CHI TIẾT ---
+Chỉ số đánh giá                       | Mô hình Gốc | Mô hình Cải tiến
+------------------------------------------------------------
+AUC-ROC Score                         | 0.5672      | 0.5677          
+Hệ số Gini                            | 0.1345      | 0.1354          
+Kolmogorov-Smirnov (KS)               | 0.0999      | 0.0972          
+Brier Score (Độ hiệu chuẩn xác suất)  | 0.1184      | 0.3718          
+Khách hàng TỐT dự báo đúng (TN)        | 43084       | 400             
+Khách hàng TỐT dự báo sai thành xấu (FP)| 0           | 42684           
+BỎ SÓT nợ xấu thực tế (FN)             | 6916        | 40              
+BẮT TRÚNG nợ xấu thực tế (TP)          | 0           | 6876            
+------------------------------------------------------------
+=> Kết quả: Bắt trúng thêm 6876 ca nợ xấu thực tế so với mô hình gốc.
+
+================================================================================
+BƯỚC 5: GIẢI THÍCH MÔ HÌNH BẰNG SHAP & FEATURE IMPORTANCE V2
+================================================================================
+Top 15 biến số quan trọng nhất (Feature Importance V2):
+Hạng  | Tên Biến Số               | Mức Độ Quan Trọng (%)
+--------------------------------------------------
+1     | EXT_SOURCES_MEAN          | 18.73               %
+2     | EXT_SOURCES_PROD          | 16.90               %
+3     | diem_tin_dung_nguon_1     | 7.41                %
+4     | diem_tin_dung_nguon_2     | 6.08                %
+5     | EXT_SOURCE_2_3_MULT       | 5.47                %
+6     | diem_tin_dung_nguon_3     | 5.38                %
+7     | PREV_APP_COUNT            | 3.33                %
+8     | so_tien_vay_vnd           | 2.84                %
+9     | DAR                       | 2.71                %
+10    | ACR                       | 2.46                %
+11    | PREV_APP_CREDIT_MEAN      | 2.46                %
+12    | gia_tri_tai_san_mua_vnd   | 2.41                %
+13    | AIR                       | 2.38                %
+14    | so_ngay_lam_viec          | 2.22                %
+15    | thu_nhap_nam_vnd          | 2.12                %
+
+Đang tính toán SHAP values trên mẫu đại diện (500 khách hàng)...
+- Đã xuất biểu đồ SHAP thành công tại: D:\NCKH\A-Default-Risk-Prediction-Model-Combining-Traditional-and-Alternative-Data\plots2\shap_summary_v2_20260601_022135.png
+
+================================================================================
+PHẦN CHỨNG MINH CÔNG THỨC & CƠ SỞ LÝ THUYẾT (TÀI LIỆU NCKH CHUẨN Q1)
+================================================================================
+Dưới đây là các công thức toán học và lập luận kinh tế học được nâng cấp để bạn đưa vào bài viết:
+
+1. Chỉ số đánh giá khả năng phân biệt AUC-ROC
+   - Công thức giải tích liên tục:
+     AUC = \int_{0}^{1} TPR(FPR^{-1}(x)) dx
+     AUC = P(f(x_bad) > f(x_good))
+   - Ý nghĩa miền trị: AUC = 0.5 (ngẫu nhiên), AUC = 1.0 (hoàn hảo).
+
+2. Hệ số Gini Coefficient
+   - Công thức:
+     Gini = 2 * AUC - 1
+
+3. Chỉ số Kolmogorov-Smirnov (KS)
+   - Định nghĩa: Độ lệch lớn nhất giữa hàm phân phối tích lũy (CDF) của nhóm Tốt và nhóm Xấu.
+   - Công thức toán học:
+     KS = \sup_{s} | F_{good}(s) - F_{bad}(s) |
+     Trong đó F_good và F_bad lần lượt là hàm phân phối tích lũy của điểm số khách hàng tốt và xấu.
+   - Ý nghĩa: Đo lường khả năng phân tách lớn nhất của mô hình. KS > 0.40 được đánh giá là mô hình rất tốt.
+
+4. Độ hiệu chuẩn xác suất Brier Score
+   - Định nghĩa: Sai lệch bình phương trung bình giữa xác suất dự báo và kết quả thực tế.
+   - Công thức toán học:
+     Brier = \frac{1}{N} \sum_{i=1}^{N} (y_i - p_i)^2
+     Trong đó y_i là nhãn thực tế (0 hoặc 1), p_i là xác suất bùng nợ mô hình dự báo.
+   - Ý nghĩa miền trị: Brier càng nhỏ (gần 0), xác suất dự báo càng sát với thực tế.
+
+5. Đánh giá Lợi ích Kinh tế & Tổn thất tài chính kỳ vọng (Expected Financial Loss - EFL)
+   - Công thức tính tổn thất kỳ vọng:
+     EFL = (FN * D) + (FP * C)
+   - So sánh định lượng thực tế:
+     + EFL Mô hình Gốc (Baseline):  EFL_base = (6916 * 100.0) + (0 * 10.0) = 691,600.00 triệu VND
+     + EFL Mô hình Cải tiến:         EFL_imp  = (40 * 100.0) + (42684 * 10.0) = 430,840.00 triệu VND
+     => Lợi ích tài chính thu về: Tiết kiệm được 260,760.00 triệu VND cho ngân hàng.
+
+6. Giải thích mô hình bằng học thuyết trò chơi (SHAP Values)
+   - Định nghĩa: Giá trị đóng góp trung bình biên (marginal contribution) của từng biến vào quyết định của mô hình.
+   - Công thức phân bổ Shapley Value:
+     \phi_i = \sum_{S \subseteq F \setminus \{i\}} \frac{|S|!(|F| - |S| - 1)!}{|F|!} [f(S \cup \{i\}) - f(S)]
+     Trong đó F là tập hợp tất cả các đặc trưng, S là tập hợp con không chứa đặc trưng i.
+================================================================================
+
+Đã lưu trữ toàn bộ số liệu tại: D:\NCKH\A-Default-Risk-Prediction-Model-Combining-Traditional-and-Alternative-Data\results2\results_v2_20260601_022135.txt
+Đã lưu biểu đồ tại: D:\NCKH\A-Default-Risk-Prediction-Model-Combining-Traditional-and-Alternative-Data\plots2\feature_importance_v2_20260601_022135.png
+Tổng thời gian chạy pipeline: 40.23 giây.
+================================================================================
+

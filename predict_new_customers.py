@@ -43,12 +43,14 @@ def main():
     y_train = df_train['TARGET']
     X_train = df_train.drop(columns=['TARGET', 'SK_ID_CURR'], errors='ignore')
     
-    # Mã hóa nhãn dạng phân loại
-    le = LabelEncoder()
+    # Mã hóa nhãn dạng phân loại (X_train)
+    label_encoders = {}
     categorical_cols = X_train.select_dtypes(include=['object']).columns
     for col in categorical_cols:
         if X_train[col].nunique() <= 2:
+            le = LabelEncoder()
             X_train[col] = le.fit_transform(X_train[col].astype(str))
+            label_encoders[col] = le
     X_train = pd.get_dummies(X_train, drop_first=True)
     X_train.columns = [re.sub(r'[\[\]\{\},:\s"\'\(\)]', '_', str(col)) for col in X_train.columns]
     
@@ -189,9 +191,9 @@ def main():
     
     # Mã hóa phân loại
     for col in categorical_cols:
-        if col in X_new.columns:
-            if X_new[col].nunique() <= 2:
-                X_new[col] = le.fit_transform(X_new[col].astype(str))
+        if col in X_new.columns and col in label_encoders:
+            le = label_encoders[col]
+            X_new[col] = X_new[col].astype(str).map(lambda s: le.transform([s])[0] if s in le.classes_ else -1)
     X_new = pd.get_dummies(X_new, drop_first=True)
     X_new.columns = [re.sub(r'[\[\]\{\},:\s"\'\(\)]', '_', str(col)) for col in X_new.columns]
     
