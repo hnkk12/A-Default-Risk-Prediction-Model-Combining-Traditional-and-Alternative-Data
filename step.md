@@ -1,47 +1,48 @@
-# Khung Nghiên Cứu và Triển Khai Mô Hình Chấm Điểm Tín Dụng
+# Reproducibility Steps & Theoretical Mapping
 
----
+This document provides a technical walkthrough connecting the Python pipeline implemented in this repository directly to the theoretical framework and hypotheses presented in the paper.
 
-## BƯỚC 1: KHỞI TẠO & NẠP DỮ LIỆU ĐA CHIỀU (DATA PREPARATION)
+## Phase 1: Data Integration & Engineering (H1 Validation)
 
-- **Việc cần làm:** Chạy ô code nạp dữ liệu truyền thống (`application_train`) kết hợp với dữ liệu hành vi thay thế (`bureau`).
-- **Mục tiêu kinh tế:** Chứng minh việc kết hợp đa nguồn dữ liệu giúp đánh giá khách hàng toàn diện hơn.
-- **Output cần thu hoạch:**
-  - Con số kích thước tập dữ liệu sau khi gộp (Số hàng, Số cột $\rightarrow$ Biến số tăng lên bao nhiêu).
-  - Tỷ lệ mất cân bằng nợ xấu thực tế trong lịch sử (Bao nhiêu % `TARGET = 0` và bao nhiêu % `TARGET = 1`).
+**Script:** `step1_2_data_processing_v2.py` & Initial steps of `step3_4_5_pipeline_v2.py`
 
----
+1.  **Addressing Information Asymmetry**: The pipeline automatically merges traditional application data with Alternative Behavioral Data.
+2.  **Key Engineered Features**:
+    - `INST_UNDERPAY_MEAN`: Mean installment underpayment in VND. (Identified by SHAP as the top tail-risk indicator).
+    - `INST_PAY_DELAY_MEAN`: Mean payment delay in days.
+    - `AIR` & `DIR`: Annuity-to-Income and Debt-to-Income ratios, crucial for assessing repayment capacity in markets with high informal income.
+    - `EXT_SOURCES_PROD`: Multiplicative interactions of standardized (300-850) external bureau scores.
 
-## BƯỚC 2: TIỀN XỬ LÝ & MÃ HÓA (PREPROCESSING)
+## Phase 2: Algorithm Benchmarking
 
-- **Việc cần làm:** Chạy code chuyển đổi toàn bộ các cột chữ (Giới tính, Học vấn, Loại tài sản, Ngành nghề) thành số thông qua `LabelEncoder` để máy tính có thể tính toán toán học.
-- **Output cần thu hoạch:**
-  - Một bộ dữ liệu sạch 100% dạng số, đã được chia tách thành 2 tập: Train (80% để học) và Validation (20% để kiểm tra độ chính xác).
+**Script:** `step3_4_5_pipeline_v2.py` (Cross-Validation Section)
 
----
+1.  **Execution**: The script runs a 3-Fold Stratified Cross-Validation to maintain the operational ~92%/8% class imbalance.
+2.  **Algorithms Evaluated**: Random Forest, LightGBM, XGBoost, and CatBoost.
+3.  **Metrics Captured**: AUC-ROC (Discriminative power), Gini, KS Statistic, and Brier Score (Calibration).
+4.  **Paper Alignment**: As detailed in Section IV.A, CatBoost emerges as the optimal architecture for this specific dataset scale (15,000 training records) and feature heterogeneity, outperforming LightGBM which typically excels only on massive-scale datasets.
 
-## BƯỚC 3: HUẤN LUYỆN & SO SÁNH MÔ HÌNH (MODEL COMPARISON)
+## Phase 3: Cost-Sensitive Optimization & EFL (H2 Validation)
 
-- **Việc cần làm:** Chạy song song 2 thuật toán mạnh nhất hiện nay cho dữ liệu bảng là LightGBM và XGBoost trên cùng một tập dữ liệu đã chuẩn bị.
-- **Output cần thu hoạch:** Bạn lập một bảng so sánh trong bài nghiên cứu với các thông số sau:
-  - LightGBM: Điểm AUC-ROC? Hệ số Gini?
-  - XGBoost: Điểm AUC-ROC? Hệ số Gini?
-  - _(Công thức tính Gini rất đơn giản: $Gini = 2 \times AUC - 1$)_
+**Script:** `step3_4_5_pipeline_v2.py` (Cost-Sensitive Section)
 
----
+1.  **The Optimization**: The script isolates the best-performing model (CatBoost) and retrains it using a modified loss function: `scale_pos_weight = 11.5`.
+2.  **Economic Evaluation**: The script dynamically calculates the Expected Financial Loss (EFL).
+    - It captures the shift in the confusion matrix (drastically increasing True Positives / caught defaults, while accepting higher False Positives).
+    - It calculates the theoretical financial savings (e.g., 3,520 million VND) by preventing expensive False Negatives.
+3.  **Calibration Trade-off**: The script logs the Brier Score deterioration, demonstrating the theoretical trade-off between financial optimization and pure statistical probability calibration.
 
-## BƯỚC 4: TRIỂN KHAI ĐIỂM CẢI TIẾN (MODEL IMPROVEMENT)
+## Phase 4: Model Interpretability (XAI)
 
-- **Việc cần làm:** Áp dụng giải pháp xử lý mất cân bằng dữ liệu bằng cách thêm trọng số `scale_pos_weight = 11.5` vào mô hình tốt nhất ở Bước 3.
-- **Output cần thu hoạch:**
-  - Điểm AUC và Gini sau khi cải tiến.
-  - Bảng ma trận nhầm lẫn (Confusion Matrix) cho thấy mô hình mới đã tăng số lượng bắt trúng các ca bùng nợ thực tế lên bao nhiêu ca so với mô hình cũ.
+**Script:** `step3_4_5_pipeline_v2.py` (SHAP Section)
 
----
+1.  **Execution**: Uses `shap.TreeExplainer` on a 500-applicant subsample.
+2.  **Outputs**: Generates global feature importance plots and SHAP Summary Plots.
+3.  **Regulatory Compliance**: These outputs fulfill the interpretability requirements for Vietnamese banking regulations (and Basel III), proving that decisions are based on coherent behavioral signals rather than opaque artifacts.
 
-## BƯỚC 5: TRÍCH XUẤT BIẾN SỐ TÀI CHÍNH QUAN TRỌNG (FEATURE IMPORTANCE)
+## Phase 5: Production Inference
 
-- **Việc cần làm:** Xuất biểu đồ top các chỉ số tài chính và hành vi tác động mạnh nhất đến rủi ro bùng nợ của khách hàng.
-- **Output cần thu hoạch:**
-  - File ảnh biểu đồ `feature_importance.png` (Top 15 biến).
-  - Danh sách tên các biến số đó để đưa vào phần luận văn nhằm giải thích dưới góc nhìn kinh tế (Ví dụ: `EXT_SOURCE` - điểm uy tín từ tổ chức bên ngoài, hay `DAYS_BIRTH` - độ tuổi ảnh hưởng thế nào đến rủi ro).
+**Script:** `predict_new_customers_v2.py`
+
+1.  **Simulated Deployment**: Demonstrates how the cost-sensitive model would be deployed in a real-world Loan Origination System.
+2.  **Threshold Adjustment**: Because `scale_pos_weight` pushes predicted probabilities upward to catch borderline defaults, the operational approval threshold must be adjusted accordingly (e.g., shifting the conceptual 15% risk tolerance to a 65% model threshold). The script implements this logic to yield final `Approve/Reject` decisions.

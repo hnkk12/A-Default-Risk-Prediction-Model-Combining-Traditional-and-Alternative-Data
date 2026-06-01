@@ -1,13 +1,17 @@
-# ignoring the dataset folder
-dataset/
-input/*.csv
-data_output/*.csv
-MinhChung_KetQua_ChayThat/cleaned_data.csv
 
-# V2 data ignore rules
 Input2/
 data_output_v2/
-new_customers2/*.csv
-MinhChung_KetQua_ChayThat_v2/cleaned_data2.csv
-results2/
-plots2/
+new_customers/*.csv
+
+
+MinhChung_KetQua_ChayThat_v2/
+catboost_info/
+
+
+.vscode/
+__pycache__/
+*.py[cod]
+*$py.class
+.DS_Store
+Thumbs.db
+
