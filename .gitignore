@@ -1,13 +1,52 @@
-# ignoring the dataset folder
-dataset/
-input/*.csv
-data_output/*.csv
+# ==============================================================================
+# 1. DỮ LIỆU LỚN & ĐẦU RA MÔ HÌNH (Vượt quá giới hạn 100MB của GitHub)
+# ==============================================================================
+# Ẩn toàn bộ thư mục dữ liệu gốc (Tổng dung lượng > 1.4 GB)
+Input/
+
+# Ẩn thư mục dữ liệu đã làm sạch
+data_output/
+
+# Ẩn tệp cleaned_data.csv trong thư mục minh chứng (180MB)
 MinhChung_KetQua_ChayThat/cleaned_data.csv
 
-# V2 data ignore rules
-Input2/
-data_output_v2/
-new_customers2/*.csv
-MinhChung_KetQua_ChayThat_v2/cleaned_data2.csv
-results2/
-plots2/
+# Ẩn thư mục thông tin huấn luyện CatBoost
+catboost_info/
+
+# ==============================================================================
+# 2. FILE TỰ ĐỘNG SINH KHI CHẠY PIPELINE CỤC BỘ (Tránh làm rác Git)
+# ==============================================================================
+# Ẩn các file log chạy có gắn timestamp của người dùng
+results/results_*.txt
+results/new_customers_eval_*.txt
+
+# Ẩn các file biểu đồ có gắn timestamp của người dùng
+plots/feature_importance_*.png
+plots/shap_summary_*.png
+
+# ==============================================================================
+# 3. MÔI TRƯỜNG ẢO & CACHE (PYTHON / IDE)
+# ==============================================================================
+# Python cache & compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE & Editor folders
+.vscode/
+.idea/
+.antigravitycli/
+.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+.venv/
+env/
+/env/
+/venv/
+ENV/
+
+# OS files
+Thumbs.db
+desktop.ini
+.DS_Store
